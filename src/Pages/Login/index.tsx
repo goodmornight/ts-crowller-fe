@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input, Button } from 'antd';
-import './login.css';
+import './style.css';
 
 const layout = {
   labelCol: { span: 8 },
