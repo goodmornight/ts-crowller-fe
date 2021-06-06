@@ -1,6 +1,13 @@
-import React from 'react';
-import { Form, Input, Button } from 'antd';
+import React, { useState } from 'react';
+import { Form, Input, Button, message } from 'antd';
+import { Redirect } from 'react-router-dom';
 import './style.css';
+import axios from 'axios';
+import qs from 'qs';
+
+interface FormFields {
+  password: string;
+}
 
 const layout = {
   labelCol: { span: 8 },
@@ -11,22 +18,36 @@ const tailLayout = {
 };
 
 const Login = () => {
-  const onFinish = (values: any) => {
-    console.log('Success:', values);
-  };
+  const [isLogin, setIsLogin] = useState(false)
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
+  const onFinish = (values: any) => {
+
+    axios.post('/api/login', qs.stringify({
+      password: values.password
+    }),
+    {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
+    .then(res => {
+
+      if(res.data?.data) {
+        setIsLogin(true);
+      } else {
+        message.error('登陆失败');
+      }
+    })
   };
 
   return (
-    <div className="login-page">
+    isLogin ? (<Redirect to="/" />):
+    (<div className="login-page">
       <Form
         {...layout}
         name="basic"
         initialValues={{ remember: true }}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
       >
 
         <Form.Item
@@ -43,7 +64,7 @@ const Login = () => {
           </Button>
         </Form.Item>
       </Form>
-    </div>
+    </div>)
   );
 };
 
