@@ -7,17 +7,10 @@ import request from '../../request';
 import moment from 'moment';
 import './style.css';
 
-interface CourseItem {
-  title: string;
-  count: number;
-}
-
 interface State {
   loaded: boolean;
   isLogin: boolean;
-  data: {
-    [key: string]: CourseItem[]
-  }
+  data: responseResult.DataStructure
 }
 
 class Home extends Component {
@@ -42,10 +35,9 @@ class Home extends Component {
     });
 
     request.get('/api/showData').then(res => {
-      if (res) {
-        this.setState({
-          data: {...this.state.data, ...res}
-        })
+      const data = res.data;
+      if (data) {
+        this.setState({ data });
       }
     });
   }
@@ -90,7 +82,6 @@ class Home extends Component {
         tempData[title] ? tempData[title].push(count) : (tempData[title] = [count]);
       })
     }
-    console.log(times)
     const result: echarts.LineSeriesOption[] = [];
     for (let i in tempData) {
       result.push({
