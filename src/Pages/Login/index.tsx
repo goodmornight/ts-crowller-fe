@@ -5,10 +5,6 @@ import './style.css';
 import axios from 'axios';
 import qs from 'qs';
 
-interface FormFields {
-  password: string;
-}
-
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },

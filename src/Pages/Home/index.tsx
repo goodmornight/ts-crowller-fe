@@ -3,19 +3,13 @@ import { Redirect } from 'react-router-dom';
 import { Button, message } from 'antd';
 import echarts from 'echarts';
 import ReactEcharts from 'echarts-for-react';
-import axios from 'axios';
+import request from '../../request';
 import moment from 'moment';
 import './style.css';
 
 interface CourseItem {
   title: string;
   count: number;
-}
-
-interface LineData {
-  name: string;
-  type: string;
-  data: number[];
 }
 
 interface State {
@@ -34,8 +28,8 @@ class Home extends Component {
   };
 
   componentDidMount() {
-    axios.get('/api/isLogin').then(res => {
-      if (!res.data?.data) {
+    request.get('/api/isLogin').then(res => {
+      if (!res) {
         this.setState({
           isLogin: false,
           loaded: true
@@ -47,18 +41,18 @@ class Home extends Component {
       }
     });
 
-    axios.get('/api/showData').then(res => {
-      if (res.data) {
+    request.get('/api/showData').then(res => {
+      if (res) {
         this.setState({
-          data: {...this.state.data, ...res.data}
+          data: {...this.state.data, ...res}
         })
       }
     });
   }
 
   handleCrowllerClick = () => {
-    axios.get('/api/getData').then(res => {
-      if (res.data?.data) {
+    request.get('/api/getData').then(res => {
+      if (res.data) {
         message.success('爬取成功');
       } else {
         message.error('爬取失败');
@@ -67,8 +61,8 @@ class Home extends Component {
   }
 
   handleLogoutClick = () => {
-    axios.get('/api/logout').then(res => {
-      if (res.data?.data) {
+    request.get('/api/logout').then(res => {
+      if (res) {
         this.setState({
           isLogin: false
         });
@@ -97,7 +91,7 @@ class Home extends Component {
       })
     }
     console.log(times)
-    const result: LineData[] = [];
+    const result: echarts.LineSeriesOption[] = [];
     for (let i in tempData) {
       result.push({
         name: i,
